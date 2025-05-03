@@ -12,9 +12,9 @@ return Application::configure(basePath: dirname(__DIR__))
     health: '/up',
   )
   ->withMiddleware(function (Middleware $middleware) {
-    $middleware->validateCsrfTokens(except: [
-      'chat/',
-    ]);
+    // $middleware->validateCsrfTokens(except: [
+    //   'chat/',
+    // ]);
   })
   ->withExceptions(function (Exceptions $exceptions) {
     //

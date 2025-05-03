@@ -7,6 +7,10 @@ Route::get('/', function () {
   return view('welcome');
 });
 
+Route::get('/chat', function () {
+  return view('chat');
+});
+
 Route::post('/chat', function () {
   broadcast(new Chat(request()->message));
   return response()->json(['status' => 'ok']);
