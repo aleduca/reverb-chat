@@ -1,5 +1,7 @@
 import './bootstrap';
 
+import Alpine from 'alpinejs'
+
 import Echo from 'laravel-echo';
 
 window.Echo = new Echo({
@@ -11,3 +13,5 @@ window.Echo = new Echo({
     forceTLS: (import.meta.env.VITE_REVERB_SCHEME ?? 'https') === 'https',
     enabledTransports: ['ws', 'wss'],
 });
+
+Alpine.start();
