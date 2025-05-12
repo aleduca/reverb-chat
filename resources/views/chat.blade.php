@@ -8,16 +8,39 @@
   <form @submit.prevent="send" id="chat-form" class="chat-messages mt-2" x-data="{
     message:'',
     loading: false,
+    typingTimeout: null,
     init(){
-      window.Echo.channel('chat').listen('.message_sent', (e) => {
+      window.Echo.private('chat').listen('Chat', (e) => {
         let messageElement = document.createElement('span');
         messageElement.className = 'p-2 bg-gray-200 block my-2';
-        messageElement.innerHTML = `<strong>Enviado:</strong> ${e.message}`;
+        messageElement.innerHTML = `<strong>${e.user.name} disse:</strong> ${e.message}`;
         const messages = document.querySelector('.messages-sent');
         messages.append(messageElement);
         messages.scrollTop = messages.scrollHeight;
         this.loading = false;
+      });
+
+      window.Echo.private('chat').listenForWhisper('typing', (e) => {
+       document.getElementById('typing').innerHTML = `<strong>${e.name}</strong> está digitando...`
       })
+
+      window.Echo.private('chat').listenForWhisper('stopTyping', (e) => {
+       document.getElementById('typing').innerHTML ='';
+      })
+    },
+    typing(){
+      window.Echo.private('chat').whisper('typing', {
+        'name': `{{ auth()->user()->name }}`
+      });
+
+      if(this.typingTimeout){
+        clearTimeout(this.typingTimeout);
+        this.typingTimeout = null;
+      }
+
+      this.typingTimeout = setTimeout(() => {
+        window.Echo.private('chat').whisper('stopTyping');
+      }, 1000)
     },
     send(){
       this.loading = true;
@@ -45,7 +68,8 @@
         <x-loading />
       </div>
     </template>
-    <input type="text" x-model="message" placeholder="Type your message..." class="w-full p-2 border border-gray-300 rounded" />
+    <div id="typing"></div>
+    <input type="text" @keydown.throttle.300ms="typing" x-model="message" placeholder="Type your message..." class="w-full p-2 border border-gray-300 rounded" />
     <button type="submit" class="bg-red-800 rounded cursor-pointer p-1 text-white hover:bg-red-700 mt-2">Send</button>
   </form>
 </div>
