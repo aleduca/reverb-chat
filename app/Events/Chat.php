@@ -33,7 +33,7 @@ class Chat implements ShouldBroadcast
   public function broadcastOn(): array
   {
     return [
-      new PrivateChannel('chat'),
+      new PresenceChannel('chat'),
     ];
   }
 

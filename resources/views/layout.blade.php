@@ -11,9 +11,15 @@
   <div class="mx-auto container">
     <div class="mb-3 bg-gray-200 p-2">
       @if(auth()->check())
-      Olá {{ auth()->user()->name }}
+      <div class="flex justify-between items-center">
+        <h2 class="text-xl font-bold">{{ auth()->user()->name }}</h2>
+        <a href="{{ route('home') }}" class="text-blue-500">Home</a>
+        <a href="{{ route('chat') }}" class="text-blue-500">Go to chat</a>
+      </div>
       @else
-      Olá Visitante.
+      <div class="flex justify-between items-center">
+        <h2 class="text-xl font-bold">Guest</h2>
+      </div>
       @endif
     </div>
     @yield('content')

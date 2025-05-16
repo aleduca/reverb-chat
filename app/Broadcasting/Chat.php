@@ -19,6 +19,8 @@ class Chat
    */
   public function join(User $user): array|bool
   {
-    return $user !== null;
+    if ($user !== null) {
+      return ['id' => $user->id, 'name' => $user->name];
+    }
   }
 }

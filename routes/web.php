@@ -11,12 +11,12 @@ Route::get('/', function () {
   return view('home', [
     'users' => User::all(),
   ]);
-});
+})->name('home');
 
 Route::get('/chat', function () {
   // Auth::loginUsingId(2);
   return view('chat');
-});
+})->name('chat');
 
 Route::post('/notificate', function () {
   $user = User::find(request()->selectedUser);
@@ -28,4 +28,4 @@ Route::post('/notificate', function () {
 Route::post('/chat', function () {
   broadcast(new Chat(request()->message, Auth::user()));
   return response()->json(['status' => 'ok']);
-})->name('chat');
+});

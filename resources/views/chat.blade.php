@@ -9,8 +9,25 @@
     message:'',
     loading: false,
     typingTimeout: null,
+    users:[],
     init(){
-      window.Echo.private('chat').listen('Chat', (e) => {
+      window.Echo.join('chat')
+      .here((users) => {
+        this.users = users;
+        console.log('total users ',users);
+      })
+      .joining((user) => {
+          this.users.push(user);
+          console.log('joining '+user.name);
+      })
+      .leaving((user) => {
+          {{-- this.users = this.users.filter(u => u.id !== user.id); --}}
+          this.users.splice(this.users.indexOf(user),1);
+          console.log('leaving '+user.name);
+      })
+      .error((error) => {
+          console.error(error);
+      }).listen('Chat', (e) => {
         let messageElement = document.createElement('span');
         messageElement.className = 'p-2 bg-gray-200 block my-2';
         messageElement.innerHTML = `<strong>${e.user.name} disse:</strong> ${e.message}`;
@@ -62,6 +79,12 @@
       });
     }
   }">
+    <span class="text-sm text-gray-500 mr-2">Online Users: <small x-text="users.length" class="text-green-400 font-bold"></small></span>
+    <ul>
+      <template x-for="user in users" :key="user.id">
+        <li x-text="user.name"></li>
+      </template>
+    </ul>
     <template x-if="loading">
       <div class="p-2 bg-gray-200 rounded my-2 flex items-center justify-items-start">
         <strong>Enviando...</strong>
